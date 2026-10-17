@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Food Corner</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Arial,sans-serif;background:#fff8ed;color:#30251e}
+header{background:#29180f;color:white;text-align:center;padding:28px 12px}
+header h1{font-size:36px;color:#ffbd45}
+header p{margin-top:8px}
+nav{background:#9d3800;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;padding:14px}
+nav a{color:white;text-decoration:none;font-weight:bold}
+.hero{text-align:center;padding:45px 15px;background:#ffe5bf}
+.hero h2{font-size:30px;color:#a83e00;margin-bottom:12px}
+.hero p{max-width:650px;margin:0 auto 18px;line-height:1.6}
+.btn,.add-btn{border:0;display:inline-block;background:#16803c;color:white;padding:11px 17px;border-radius:7px;text-decoration:none;font-weight:bold;cursor:pointer}
+.btn{margin:5px}
+.menu-section{max-width:1250px;padding:35px 16px;margin:auto}
+.menu-section h2,.about h2,.contact h2{text-align:center;color:#b84600;margin-bottom:25px;font-size:28px}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+.food-card{background:white;border:1px solid #f0d8be;border-radius:12px;overflow:hidden;text-align:center;box-shadow:0 3px 10px #00000010}
+.food-photo{width:100%;height:180px;object-fit:cover;display:block;background:#f0dfcc}
+.food-info{padding:13px}
+.food-info h3{font-size:18px;margin-bottom:8px}
+.description{font-size:13px;color:#666;min-height:34px}
+.price{font-size:22px;font-weight:bold;color:#126238;margin:10px}
+.add-btn{width:100%;margin-top:5px}
+.cart-section{max-width:900px;margin:25px auto;padding:25px 16px}
+.cart-section h2{text-align:center;color:#b84600;margin-bottom:20px}
+.cart-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:white;border:1px solid #f0d8be;border-radius:8px;padding:13px;margin-bottom:10px}
+.qty-controls{display:flex;align-items:center;gap:9px}
+.qty-controls button{border:0;border-radius:5px;background:#16803c;color:white;padding:7px 12px;font-size:17px;cursor:pointer}
+.qty-controls .remove{background:#b42318;font-size:13px}
+#cart-total{text-align:center;font-size:25px;color:#126238;margin:20px}
+.cart-actions{text-align:center}
+.empty{text-align:center;padding:18px;color:#666}
+.about{background:#ffedda;text-align:center;padding:40px 18px;line-height:1.8}
+.about p{max-width:750px;margin:auto}
+.contact{text-align:center;padding:38px 15px}
+.contact p{margin:12px}
+.contact a:not(.btn){color:#a83e00;overflow-wrap:anywhere}
+footer{background:#29180f;color:white;text-align:center;padding:22px;line-height:1.8}
+@media(max-width:500px){header h1{font-size:29px}.hero h2{font-size:25px}.menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.food-photo{height:125px}.food-info{padding:9px}.food-info h3{font-size:15px}.description{font-size:12px}.price{font-size:19px}.add-btn{font-size:12px;padding:10px 4px}.cart-row{align-items:flex-start}}
+</style>
+</head>
+<body>
+<header id="home"><h1>🍴 My Food Corner</h1><p>Fresh Food, Happy Mood!</p><p>Delicious Food • Great Drinks • Good Vibes</p></header>
+<nav><a href="#home">Home</a><a href="#food">Food Menu</a><a href="#drinks">Drinks Menu</a><a href="#cart">🛒 Cart (<span id="cart-count">0</span>)</a><a href="#about">About</a><a href="#contact">Contact</a></nav>
+<section class="hero"><h2>Welcome to My Food Corner!</h2><p>Choose your favourite food and drinks, add them to your cart, and send your complete order to us on WhatsApp.</p><a class="btn" href="#food">Explore Food 🍔</a><a class="btn" href="#drinks">Explore Drinks 🥤</a></section>
+<section class="menu-section" id="food"><h2>🍔 Our Food Menu</h2><div class="menu-grid" id="food-list"></div></section>
+<section class="menu-section" id="drinks"><h2>🥤 Our Drinks Menu</h2><div class="menu-grid" id="drinks-list"></div></section>
+<section class="cart-section" id="cart"><h2>🛒 Your Shopping Cart</h2><div id="cart-items"><p class="empty">Your cart is empty. Add some delicious food!</p></div><h3 id="cart-total">Total: ₹0</h3><div class="cart-actions"><button class="btn" onclick="checkoutWhatsApp()">Order All on WhatsApp</button><button class="btn" onclick="clearCart()" style="background:#b42318">Clear Cart</button></div></section>
+<section class="about" id="about"><h2>About My Food Corner</h2><p>Explore tasty meals, sandwiches, refreshing juices, creamy shakes, tea and coffee. Select your items, adjust quantities, and place your order through WhatsApp.</p></section>
+<section class="contact" id="contact"><h2>📞 Contact Us</h2><p><strong>Phone:</strong> <a href="tel:+918368195875">8368195875</a></p><p><strong>Email:</strong> <a href="mailto:tttushar140@gmail.com">tttushar140@gmail.com</a></p><a class="btn" href="https://wa.me/918368195875" target="_blank" rel="noopener">Chat on WhatsApp</a></section>
+<footer><h3>🍴 My Food Corner</h3><p>Fresh Food, Happy Mood!</p><p>© 2026 My Food Corner. All rights reserved.</p></footer>
+<script>
+const WHATSAPP_NUMBER="918368195875";
+const foodItems=[
+{name:"Classic Veg Sandwich",price:80,description:"Fresh vegetable sandwich.",image:"images/classic-veg-sandwich.png"},
+{name:"Cheese Sandwich",price:110,description:"Toasted sandwich with cheese.",image:"images/cheese-sandwich.png"},
+{name:"Roti with Mix Veg Sabzi",price:120,description:"Homestyle roti and vegetables.",image:"images/roti-sabji.png"},
+{name:"Rajma Chawal",price:120,description:"Rajma curry served with rice.",image:"images/rajma-chawal.png"},
+{name:"Chole Chawal",price:110,description:"Spiced chickpeas with rice.",image:"images/chole-chawal.png"},
+{name:"Veg Masala Maggi",price:70,description:"Hot noodles with vegetables.",image:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80"}
+];
+const drinkItems=[
+{name:"Cold Coffee",price:100,description:"Chilled and creamy coffee.",image:"images/cold-coffee.png"},
+{name:"Chocolate Shake",price:120,description:"Rich chocolate milkshake.",image:"images/chocolate-shake.png"},
+{name:"Lemon Mint Cooler",price:60,description:"Refreshing lemon and mint.",image:"images/lemon-mint-cooler.png"},
+{name:"Fresh Beetroot Juice",price:70,description:"Fresh beetroot juice.",image:"images/chukandar-juice.png"},
+{name:"Fresh Lemon Tea",price:40,description:"Refreshing lemon tea.",image:"images/lemon-tea.png"},
+{name:"Masala Chai",price:30,description:"Traditional Indian spiced tea.",image:"images/masala-chai.png"},
+{name:"Hot Coffee with Milk",price:50,description:"Warm coffee with milk.",image:"images/hot-coffee-milk.png"},
+{name:"Classic Black Coffee",price:40,description:"Bold black coffee.",image:"images/black-coffee.png"},
+{name:"Iced Black Coffee",price:60,description:"Chilled black coffee.",image:"images/iced-black-coffee.png"},
+{name:"Oreo Shake",price:130,description:"Creamy chocolate cookie shake.",image:"images/oreo-shake.png"}
+];
+let cart={};
+function createCard(item){
+const card=document.createElement("article");card.className="food-card";
+const photo=document.createElement("img");photo.className="food-photo";photo.src=item.image;photo.alt=item.name;photo.loading="lazy";
+photo.onerror=function(){this.onerror=null;this.src="https://placehold.co/600x400/fff0dc/8b4513?text="+encodeURIComponent(item.name)};
+const info=document.createElement("div");info.className="food-info";
+const name=document.createElement("h3");name.textContent=item.name;
+const desc=document.createElement("p");desc.className="description";desc.textContent=item.description;
+const price=document.createElement("div");price.className="price";price.textContent="₹"+item.price;
+const add=document.createElement("button");add.className="add-btn";add.textContent="＋ Add to Cart";add.onclick=()=>addToCart(item);
+info.append(name,desc,price,add);card.append(photo,info);return card;
+}
+foodItems.forEach(item=>document.getElementById("food-list").appendChild(createCard(item)));
+drinkItems.forEach(item=>document.getElementById("drinks-list").appendChild(createCard(item)));
+function addToCart(item){if(cart[item.name])cart[item.name].qty++;else cart[item.name]={...item,qty:1};renderCart()}
+function changeQty(name,amount){if(!cart[name])return;cart[name].qty+=amount;if(cart[name].qty<=0)delete cart[name];renderCart()}
+function removeItem(name){delete cart[name];renderCart()}
+function clearCart(){cart={};renderCart()}
+function renderCart(){
+const container=document.getElementById("cart-items");container.replaceChildren();
+const items=Object.values(cart);let total=0,count=0;
+if(items.length===0){const empty=document.createElement("p");empty.className="empty";empty.textContent="Your cart is empty. Add some delicious food!";container.appendChild(empty)}
+items.forEach(item=>{
+const subtotal=item.price*item.qty;total+=subtotal;count+=item.qty;
+const row=document.createElement("div");row.className="cart-row";
+const details=document.createElement("div");const title=document.createElement("strong");title.textContent=item.name;
+const cost=document.createElement("p");cost.textContent=`₹${item.price} × ${item.qty} = ₹${subtotal}`;details.append(title,cost);
+const controls=document.createElement("div");controls.className="qty-controls";
+const minus=document.createElement("button");minus.textContent="−";minus.setAttribute("aria-label","Decrease quantity");minus.onclick=()=>changeQty(item.name,-1);
+const qty=document.createElement("span");qty.textContent=item.qty;
+const plus=document.createElement("button");plus.textContent="+";plus.setAttribute("aria-label","Increase quantity");plus.onclick=()=>changeQty(item.name,1);
+const remove=document.createElement("button");remove.textContent="Remove";remove.className="remove";remove.onclick=()=>removeItem(item.name);
+controls.append(minus,qty,plus,remove);row.append(details,controls);container.appendChild(row);
+});
+document.getElementById("cart-total").textContent="Total: ₹"+total;
+document.getElementById("cart-count").textContent=count;
+}
+function checkoutWhatsApp(){
+const items=Object.values(cart);if(items.length===0){alert("Your cart is empty! Please add items first.");return}
+let total=0;let message="Hello My Food Corner! 🍴\nI would like to place this order:\n\n";
+items.forEach((item,index)=>{const subtotal=item.price*item.qty;total+=subtotal;message+=`${index+1}. ${item.name}\n   Quantity: ${item.qty}\n   Price: ₹${item.price}\n   Subtotal: ₹${subtotal}\n\n`});
+message+=`TOTAL: ₹${total}\n\nPlease confirm my order. Thank you!`;
+window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(message),"_blank");
+}
+renderCart();
+</script>
+</body>
+</html>
